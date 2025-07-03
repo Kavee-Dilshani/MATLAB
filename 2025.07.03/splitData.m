@@ -1,0 +1,12 @@
+function [trD
+    ata,teData] = splitData(data)
+ [m,n] = size(data)
+ 
+ indices = randperm(m);
+ data = data(indices,:);
+ 
+ trData = []; teData =[];
+ 
+ nTr = round(m*0.7);
+ trData = data(1:nTr,:);
+ teData = data(nTr+1:m,:);
