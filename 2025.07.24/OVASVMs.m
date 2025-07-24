@@ -1,0 +1,65 @@
+function accuracy = OVASVMs(data,N)
+
+[trainData,teData]  =  splitData(data);
+[trData,valData] = splitData(trainData);
+
+A =1:N;
+ 
+C = [2^-10 2^-9 2^-8 2^-7 2^-6 2^-5 2^-4 2^-3 2^-2 2^-1 2^0 2^1 2^2 2^3 2^4 2^5 2^6 2^7 2^8 2^9 2^10];
+% C = 2^-10:  :2^10
+accuracy =[];
+
+for i = 1:length(C)
+    options = svmlopt('C', C(i), 'Verbosity',0);
+    predict=[];
+    
+    for class =1:N
+        Model = [int2str(A(class)),'VsAll'];
+        x = invertData(trData,A(class));
+        y = x(:,end);
+        x(:,end) = [];
+        svmlwrite('SVMLTrain',x,y);
+        svm_learn(options,'SVMLTrain',Model);
+        
+        xval = invertData(valData,A(class));
+        yval = xval(:,end);
+        xval(:,end) = [];
+        svmlwrite('SVMLVal',xval, yval);
+        ModelOutput = ['Output','ínt2str(A(class))',VsAll];
+        svm_classsify(options,'SVMVal',Model,ModelOutput);
+        svmpredict = svmlread(ModelOutput);
+        predict = [predict, svmpredict];
+    end  %endfro class
+    
+    accuracy(i) = WinnerTakesAll(valData,predict,A);
+end %endfor i
+
+[elt,ind] = max(accuracy);
+cOpt = C(ind);
+
+        
+%Testing using optimal c
+
+options = svmlopt('C',cOpt, 'Verbosity',0);
+predict=[];
+
+
+for class =1:N
+        Model = [int2str(A(class)),'VsAll'];
+        x = invertData(trData,A(class));
+        y = x(:,end);
+        x(:,end) = [];
+        svmlwrite('SVMLTrain',x,y);
+        svm_learn(options,'SVMLTrain',Model);
+        
+        xtest = invertData(teData,A(class));
+        ytest = xtest(:,end);
+        xtest(:,end) = [];
+        svmlwrite('SVMLTest',xtest, ytest);
+        ModelOutput = ['Output','ínt2str(A(class))',VsAll];
+        svm_classsify(options,'SVMLTest',Model,ModelOutput);
+        svmpredict = svmlread(ModelOutput);
+        predict = [predict, svmpredict];
+    end  %endfro class
+
+    accuracy = WinnerTakesAll(teData,predict,A);
