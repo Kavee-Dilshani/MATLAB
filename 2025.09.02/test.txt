@@ -1,0 +1,312 @@
+>> rmmissing
+Not enough input arguments.
+
+Error in rmmissing (line 65)
+[A,AisTable,byrows,kount,dataVars,allVars] =
+parseInputs(A,varargin{:});
+ 
+>> help remmising
+--- help for rmmissing ---
+
+ rmmissing   Remove rows or columns with missing entries
+    First argument must be numeric, datetime, duration, calendarDuration,
+    string, categorical, character array, cell array of character vectors,
+    a table, or a timetable.
+    Standard missing data is defined as:
+       NaN                   - for double and single floating-point arrays
+       NaN                   - for duration and calendarDuration arrays
+       NaT                   - for datetime arrays
+       <missing>             - for string arrays
+       <undefined>           - for categorical arrays
+       blank character [' '] - for character arrays
+       empty character {''}  - for cell arrays of character vectors
+ 
+    B = rmmissing(A) removes missing entries from a vector, or rows with
+    missing entries from a matrix or table.
+ 
+    B = rmmissing(A,DIM) reduces the size of A along the dimension DIM.
+    DIM = 1 removes rows, and DIM = 2 removes columns with missing entries.
+    If A is a table, DIM = 2 removes table variables. By default, rmmissing
+    reduces the size of A along its first non-singleton dimension: it
+    removes rows from matrices and tables.
+ 
+    B = rmmissing(A,...,'MinNumMissing',N) removes rows (columns) that
+    contain at least N missing entries. N must be an integer. By default,
+    N = 1.
+ 
+    [B,I] = rmmissing(A,...) also returns a logical row (column) vector I
+    indicating which rows (columns) of A were removed.
+ 
+    Arguments supported only for table inputs:
+ 
+    B = rmmissing(A,...,'DataVariables',DV) removes rows according to
+    missing data in table variables DV. The default is all table variables
+    in A. DV must be a table variable name, a cell array of table variable
+    names, a vector of table variable indices, a logical vector, or a
+    function handle that returns a logical scalar (such as @isnumeric).
+ 
+    Examples:
+ 
+      % Remove NaN entries from a vector
+        a = [NaN 1 2 NaN NaN 3]
+        b = rmmissing(a)
+ 
+      % Remove only rows that contain at least 2 missing entries
+        A = [NaN(1,3); 13 1 -20; NaN(4,1) ones(4,2); -1 7 -10; NaN(1,3)]
+        B = rmmissing(A,'MinNumMissing',2)
+ 
+      % Remove table rows that contain standard missing data
+        v1 = {'AB'; ''; ''; 'XYZZ'; 'CDE'};
+        v2 = [NaN; -1; 8; 10; 4];
+        v3 = categorical({'yes'; '--'; 'yes'; 'no'; 'yes'},{'yes' 'no'});
+        T = table(v1,v2,v3)
+        U = rmmissing(T)
+ 
+      % Ignore rows with NaN entries when using sortrows
+        a = [ [20 10 NaN 30 -5]', [1:5]' ]
+        [b,ia] = rmmissing(a)
+        a(~ia,:) = sortrows(b)
+ 
+    See also ismissing, standardizeMissing, fillmissing, isnan, isnat
+
+    Reference page for rmmissing
+
+=============================================================
+>> help fillmissing
+ fillmissing   Fill missing entries
+    First argument must be numeric, datetime, duration, calendarDuration,
+    string, categorical, character array, cell array of character vectors,
+    a table, or a timetable.
+    Standard missing data is defined as:
+       NaN                   - for double and single floating-point arrays
+       NaN                   - for duration and calendarDuration arrays
+       NaT                   - for datetime arrays
+       <missing>             - for string arrays
+       <undefined>           - for categorical arrays
+       blank character [' '] - for character arrays
+       empty character {''}  - for cell arrays of character vectors
+ 
+    B = fillmissing(A,'constant',C) fills missing entries in A with the
+    constant scalar value C. You can also use a vector C to specify
+    different fill constants for each column (or table variable) in A: C(i)
+    represents the fill constant used for the i-th column of A. For tables
+    A, C can also be a cell containing fill constants of different types.
+ 
+    B = fillmissing(A,INTERP) fills standard missing entries using the
+    interpolation method specified by INTERP, which must be:
+       'previous'  - Previous non-missing entry.
+       'next'      - Next non-missing entry.
+       'nearest'   - Nearest non-missing entry.
+       'linear'    - Linear interpolation of non-missing entries.
+       'spline'    - Piecewise cubic spline interpolation.
+       'pchip'     - Shape-preserving piecewise cubic spline interpolation.
+ 
+    B = fillmissing(A,MOV,K) fills standard missing entries using a
+    centered moving window formed from neighboring non-missing entries.
+    K specifies the window length and must be a positive integer scalar.
+    MOV specifies the moving window method, which must be:
+       'movmean'   - Moving average of neighboring non-missing entries.
+       'movmedian' - Moving median of neighboring non-missing entries.
+    
+    B = fillmissing(A,MOV,[NB NF]) uses a moving window defined by the
+    previous NB elements, the current element, and the next NF elements.
+ 
+    Optional arguments:
+ 
+    B = fillmissing(A,METHOD,...,'EndValues',E) also specifies how to
+    extrapolate leading and trailing missing values. E must be:
+       'extrap'    - (default) Use METHOD to also extrapolate missing data.
+       'previous'  - Previous non-missing entry.
+       'next'      - Next non-missing entry.
+       'nearest'   - Nearest non-missing entry.
+       'none'      - No extrapolation of missing values.
+       VALUE       - Use an extrapolation constant. VALUE must be a scalar
+                     or a vector of type numeric, duration, or datetime.
+ 
+    B = fillmissing(A,METHOD,...,'SamplePoints',X) also specifies the
+    sample points X used by the fill method. X must be a floating-point,
+    duration, or datetime vector. X must be sorted. X must contain unique
+    points. You can use X to specify time stamps for the data. By default,
+    fillmissing uses data sampled uniformly at points X = [1 2 3 ... ].
+ 
+    B = fillmissing(A,METHOD,DIM,...) also specifies a dimension DIM to
+    operate along. A must be an array.
+ 
+    [B,FA] = fillmissing(A,...) also returns a logical array FA indicating
+    the missing entries of A that were filled. FA has the same size as A.
+ 
+    Arguments supported only for table inputs:
+ 
+    B = fillmissing(A,...,'DataVariables',DV) fills missing data only in
+    the table variables specified by DV. The default is all table variables
+    in A. DV must be a table variable name, a cell array of table variable
+    names, a vector of table variable indices, a logical vector, or a
+    function handle that returns a logical scalar (such as @isnumeric).
+    Output table B has the same size as input table A.
+ 
+    Examples:
+ 
+      % Linear interpolation of NaN entries
+        a = [NaN 1 2 NaN 4 NaN]
+        b = fillmissing(a,'linear')
+ 
+      % Fill leading and trailing NaN entries with their nearest neighbors
+        a = [NaN 1 2 NaN 4 NaN]
+        b = fillmissing(a,'linear','EndValues','nearest')
+ 
+      % Fill NaN entries with their previous neighbors (zero-order-hold)
+        A = [1000 1 -10; NaN 1 NaN; NaN 1 NaN; -1 77 5; NaN(1,3)]
+        B = fillmissing(A,'previous')
+ 
+      % Fill NaN entries with the mean of each column
+        A = [NaN(1,3); 13 1 -20; NaN(4,1) (1:4)' NaN(4,1); -1 7 -10; NaN(1,3)]
+        C = mean(A,'omitnan');
+        B = fillmissing(A,'constant',C)
+ 
+      % Linear interpolation of NaN entries for non-uniformly spaced data
+        x = [linspace(-3,1,120) linspace(1.1,7,30)];
+        a = exp(-0.1*x).*sin(2*x); a(a > -0.2 & a < 0.2) = NaN;
+        [b,id] = fillmissing(a,'linear','SamplePoints',x);
+        plot(x,a,'.', x(id),b(id),'o')
+        title('''linear'' fill')
+        xlabel('Sample points x');
+        legend('original data','filled missing data')
+ 
+      % Fill missing entries in tables with their previous neighbors
+        temperature = [21.1 21.5 NaN 23.1 25.7 24.1 25.3 NaN 24.1 25.5]';
+        windSpeed = [12.9 13.3 12.1 13.5 10.9 NaN NaN 12.2 10.8 17.1]';
+        windDirection = categorical({'W' 'SW' 'SW' '' 'SW' 'S' ...
+                            'S' 'SW' 'SW' 'SW'})';
+        conditions = {'PTCLDY' '' '' 'PTCLDY' 'FAIR' 'CLEAR' ...
+                            'CLEAR' 'FAIR' 'PTCLDY' 'MOSUNNY'}';
+        T = table(temperature,windSpeed,windDirection,conditions)
+        U = fillmissing(T,'previous')
+ 
+    See also ismissing, standardizeMissing, rmmissing, isnan, isnat
+
+    Reference page for fillmissing
+
+=======================================================
+
+help normalize
+
+normalize not found.
+
+Use the Help browser search field to search the documentation, or
+type "help help" for help command options, such as help for methods.
+
+======================================================
+
+
+>> data = load('iris.txt');   //now do not use this way
+
+>> load carbig  // load dataset
+----------------------------------------------------------
+ tbl = table(Horsepower,Weight,Acceleration,Cylinders,MPG);  // select 5 attitibute
+ --------------------------------------------------------
+ disp('First 5 rows of dataset:')   //display msg
+ 
+First 5 rows of dataset:     //load 5 record of dataset
+>> head(tbl,5)
+
+ans =
+
+  5×5 table
+
+    Horsepower    Weight    Acceleration    Cylinders    MPG
+    __________    ______    ____________    _________    ___
+
+    130           3504        12            8            18 
+    165           3693      11.5            8            15 
+    150           3436        11            8            18 
+    150           3433        12            8            16 
+    140           3449      10.5            8            17 
+	
+-------------------------------------------------------
+disp('Summary statistics:')
+Summary statistics:
+>> summary(tbl)
+
+Variables:
+
+    Horsepower: 406×1 double
+
+        Values:
+
+            Min            46         
+            Median         95         
+            Max            230        
+            NumMissing     6          
+
+    Weight: 406×1 double
+
+        Values:
+
+            Min         1613  
+            Median    2822.5  
+            Max         5140  
+
+    Acceleration: 406×1 double
+
+        Values:
+
+            Min          8          
+            Median    15.5          
+            Max       24.8          
+
+    Cylinders: 406×1 double
+
+        Values:
+
+            Min       3          
+            Median    4          
+            Max       8          
+
+    MPG: 406×1 double
+
+        Values:
+
+            Min            9    
+            Median         23   
+            Max            46.6 
+            NumMissing     8  
+			
+-----------------------------------------------------
+
+ disp('Number of missing values per column: ')   // display the missing value
+ 
+Number of missing values per column: 
+>> disp(sum(ismissing(tbl)))
+     6     0     0     0     8
+
+
+-----------------------------------------------------
+ tbl_clean = rmmissing(tbl);  //remove the missing values
+ 
+>> fprintf('After removing missing values: %d rows remain \n', height(tbl_clean));
+
+After removing missing values: 392 rows remain 
+
+------------------------------------------------------
+
+// use linear regression to fill the missing values
+
+tbl_fill = fillmissing(tbl,'linear');
+
+>> disp(sum(ismissing(tbl_fill)))
+     0     0     0     0     0
+------------------------------------------------------
+
+// normalization :  get to normal form  (scale data[-1,1])
+//standardisation: PCA
+
+X = tbl_clean{:,{'Horepower,"Weight'','Äcceleration'}};  //extract features
+
+X_norm = normalize(X,'range //normalization
+
+X_std = zcore(x); // standarlizatoin
+
+
+
+
+
