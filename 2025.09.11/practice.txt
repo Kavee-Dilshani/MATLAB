@@ -1,0 +1,127 @@
+load fisheriris
+
+>> X = meas;
+
+>> y = species;
+
+
+
+>> help cvpartition
+ cvpartition Create a cross-validation partition for data.
+    An object of the cvpartition class defines a random partition on a
+    set of data of a specified size.  This partition can be used to
+    define test and training sets for validating a statistical model
+    using cross-validation.
+ 
+    C = cvpartition(N,'KFold',K) creates a cvpartition object C
+    defining a random partition for K-fold cross-validation on N
+    observations. The partition divides N observations into K disjoint
+    subsamples (folds), chosen randomly but with roughly equal size.
+    The default value of K is 10.
+ 
+    C = cvpartition(GROUP,'KFold',K) creates a cvpartition object C
+    defining a random partition for a stratified K-fold
+    cross-validation. GROUP is a vector indicating the class
+    information for each observation. GROUP can be a categorical
+    variable, a numeric vector, a string array, or a cell array of
+    strings. Each subsample has roughly equal size and roughly the same
+    class proportions as in GROUP. cvpartition treats NaNs or empty
+    strings in GROUP as missing values.
+ 
+    C = cvpartition(N,'HoldOut',P) creates a cvpartition object C
+    defining a random partition for hold-out validation on N
+    observations. This partition divides N observations into a training
+    set and a test set. P must be a scalar. When 0<P<1, cvpartition
+    randomly selects approximately P*N observations for the test set.
+    When P is an integer, it randomly selects P observations for the
+    test set. The default value of P is 1/10.
+ 
+    C = cvpartition(GROUP,'HoldOut',P) randomly partitions observations
+    into a training set and a test set with stratification, using the
+    class information in GROUP, i.e., both training and test sets have
+    roughly the same class proportions as in GROUP.
+ 
+    C = cvpartition(N,'LeaveOut') creates an object C defining a random
+    partition for leave-one-out cross-validation on N observations.
+    Leave-one-out is a special case of K-fold in which the number of
+    folds is equal to the number of observations N.
+ 
+    C = cvpartition(N,'Resubstitution') creates a cvpartition object C
+    which does not partition the data. Both the training set and the
+    test set contain all of the original N observations.
+ 
+    cvpartition properties:
+       Type               - Type of validation partition. 
+       NumObservations    - Number of observations.
+       NumTestSets        - Number of test sets. 
+       TrainSize          - Size of each training set. 
+       TestSize           - Size of each test set. 
+ 
+    cvpartition methods:
+       repartition        - Rerandomize a cross-validation partition.
+       test               - Test set for a cross-validation partition.
+       training           - Training set for a cross-validation partition.
+ 
+    Example: Use 10-fold stratified cross-validation to compute the
+    misclassification error for CLASSIFY on iris data.
+ 
+      load('fisheriris');
+      CVO = cvpartition(species,'KFold',10);
+      err = zeros(CVO.NumTestSets,1);
+      for i = 1:CVO.NumTestSets
+          trIdx = CVO.training(i);
+          teIdx = CVO.test(i);
+          ytest = classify(meas(teIdx,:),meas(trIdx,:),species(trIdx,:));
+          err(i) = sum(~strcmp(ytest,species(teIdx)));
+      end
+      cvErr = sum(err)/sum(CVO.TestSize);
+ 
+    See also cvpartition/test, cvpartition/training, cvpartition/repartition, crossval.
+
+    Reference page for cvpartition
+    Other functions named cvpartition
+	
+	
+%Train-test split
+	
+	
+>> cv = cvpartition(y, 'HoldOut', 0.3);
+
+Xtrain = X(training(cv),:);
+
+>> ytrain = y(training(cv),:);
+
+>> Xtest = X(test(cv),:);
+
+>> ytest = y(test(cv),:);
+
+>> Mdl = fitcknn(Xtrain,ytrain,'NumNeighbors',3);
+
+>> ypred = predict(Mdl,Xtest);
+
+>> acc = sum(strcmp(ypred,ytest)) / numel(ytest);
+
+
+>> fprintf('Accuracy:%.2f%%\n',acc*100);
+Accuracy:95.56%
+
+
+kNN with K-fold cross validation
+
+load fisheriris
+X = meas;
+y = species;
+
+nFolds =5;
+cv = cvparition(y,'KFold',nFold);
+accuracy = zeros(nFolds,1);
+
+for i =1:nFolds
+    trainIdx = training(cv,i);
+    testIdx = test(cv,i);
+    
+    model = fitcknn(X(trainIdx,:),y(trainIdx),'NumNeighbors',5);
+    prediction = categorical(predict(model,X(testIdx,:)));
+    
+    accuracy(i) = sum(predictions == y(testIdx) / numel(predictions);
+    fpreintf()
