@@ -1,0 +1,171 @@
+load fisheriris
+X = meas;
+Y = species;
+
+nFolds = 5;
+cv = cvpartition(Y,'KFold',nFolds);
+accuracy = zeros(nFolds,1);
+
+for i = 1:nFolds
+    %Training and test indices
+    trainIdx = training(cv,i);
+    testIdx = test(cv, i);
+    
+    %train kNN model
+    model = fitcknn(X(trainIdx,:),Y(trainIdx),'NumNeighbors',3); 
+    %model = fitcsvm(X(trainIdx,:),Y(trainIdx),'KernelFunction','linear');
+    %Prediction
+    predictions = categorical(predict(model,X(trainIdx,:)));
+    
+    %evalueation
+    accuracy(i) = sum(predictions == Y(testIdx)) / numel(predictions);
+    fprintd('Fld %d Accuracy %.2f%%\n',i,accuracy(i)*100);
+end
+
+%overall performance
+fprintf('\nAverage accuracy accross %d folds: %.2f%%\n',nFolds,mean(accuracy)*100);
+
+
+cmd
+...
+
+
+Warning: Name is nonexistent or not a directory:
+E:\DIP\vlfeat-0.9.21\toolbox\mex\mexw64 
+Warning: Name is nonexistent or not a directory:
+E:\DIP\vlfeat-0.9.21\toolbox\fisher 
+Warning: Name is nonexistent or not a directory:
+E:\DIP\vlfeat-0.9.21\toolbox\vlad 
+Warning: Name is nonexistent or not a directory:
+E:\DIP\vlfeat-0.9.21\toolbox\gmm 
+Warning: Name is nonexistent or not a directory:
+E:\DIP\vlfeat-0.9.21\toolbox\slic 
+Warning: Name is nonexistent or not a directory:
+E:\DIP\vlfeat-0.9.21\toolbox\special 
+Warning: Name is nonexistent or not a directory:
+E:\DIP\vlfeat-0.9.21\toolbox\sift 
+Warning: Name is nonexistent or not a directory:
+E:\DIP\vlfeat-0.9.21\toolbox\quickshift 
+Warning: Name is nonexistent or not a directory:
+E:\DIP\vlfeat-0.9.21\toolbox\plotop 
+Warning: Name is nonexistent or not a directory:
+E:\DIP\vlfeat-0.9.21\toolbox\mser 
+Warning: Name is nonexistent or not a directory:
+E:\DIP\vlfeat-0.9.21\toolbox\misc 
+Warning: Name is nonexistent or not a directory:
+E:\DIP\vlfeat-0.9.21\toolbox\kmeans 
+Warning: Name is nonexistent or not a directory:
+E:\DIP\vlfeat-0.9.21\toolbox\imop 
+Warning: Name is nonexistent or not a directory:
+E:\DIP\vlfeat-0.9.21\toolbox\geometry 
+Warning: Name is nonexistent or not a directory:
+E:\DIP\vlfeat-0.9.21\toolbox\aib 
+Warning: Name is nonexistent or not a directory: E:\DIP\vlfeat-0.9.21\toolbox 
+>> kflodcv
+Undefined function or variable 'kflodcv'.
+ 
+Did you mean:
+>> kfoldcv
+Matrix dimensions must agree.
+
+Error in  ==  (line 41)
+    t = (acodes == bcodes) & (acodes ~= 0);
+
+Error in kfoldcv (line 21)
+    accuracy(i) = sum(predictions == Y(testIdx)) / numel(predictions);
+ 
+>> kfoldcv
+Error using ClassificationSVM.prepareData (line 686)
+You cannot train an SVM model for more than 2 classes.
+
+Error in classreg.learning.FitTemplate/fit (line 213)
+                    this.PrepareData(X,Y,this.BaseFitObjectArgs{:});
+
+Error in ClassificationSVM.fit (line 240)
+            this = fit(temp,X,Y);
+
+Error in fitcsvm (line 370)
+    obj = ClassificationSVM.fit(X,Y,RemainingArgs{:});
+
+Error in kfoldcv (line 16)
+    model = fitcsvm(X(trainIdx,:),Y(trainIdx),'KernelFunction','linear');
+ 
+>> kfoldcv
+Error using ClassificationSVM.prepareData (line 686)
+You cannot train an SVM model for more than 2 classes.
+
+Error in classreg.learning.FitTemplate/fit (line 213)
+                    this.PrepareData(X,Y,this.BaseFitObjectArgs{:});
+
+Error in ClassificationSVM.fit (line 240)
+            this = fit(temp,X,Y);
+
+Error in fitcsvm (line 370)
+    obj = ClassificationSVM.fit(X,Y,RemainingArgs{:});
+
+Error in kfoldcv (line 16)
+    model = fitcsvm(X(trainIdx,:),Y(trainIdx),'KernelFunction','linear');
+ 
+>> kfoldcv
+Matrix dimensions must agree.
+
+Error in  ==  (line 41)
+    t = (acodes == bcodes) & (acodes ~= 0);
+
+Error in kfoldcv (line 21)
+    accuracy(i) = sum(predictions == Y(testIdx)) / numel(predictions);
+ 
+>> kfoldcv
+Matrix dimensions must agree.
+
+Error in  ==  (line 41)
+    t = (acodes == bcodes) & (acodes ~= 0);
+
+Error in kfoldcv (line 21)
+    accuracy(i) = sum(predictions == Y(testIdx)) / numel(predictions);
+ 
+>> kfoldcv
+Fld 1 Accuracy 96.67%
+Fld 2 Accuracy 96.67%
+Fld 3 Accuracy 93.33%
+Fld 4 Accuracy 96.67%
+Fld 5 Accuracy 96.67%
+
+Average accuracy accross 5 folds: 96.00%
+>> kfoldcv
+Fld 1 Accuracy 100.00%
+Fld 2 Accuracy 93.33%
+Fld 3 Accuracy 93.33%
+Fld 4 Accuracy 96.67%
+Fld 5 Accuracy 96.67%
+
+Average accuracy accross 5 folds: 96.00%
+>> kfoldcv
+Fld 1 Accuracy 100.00%
+Fld 2 Accuracy 96.67%
+Fld 3 Accuracy 100.00%
+Fld 4 Accuracy 93.33%
+Fld 5 Accuracy 93.33%
+
+Average accuracy accross 5 folds: 96.67%
+>> 
+
+--------------------------------------
+
+repmat('0',1,attribute)t =>  repeating values
+
+repeating value =0
+1 = row wise
+
+-----------------------------
+
+strcmp => get string
+
+-------------------------------
+
+data{1,1}=> sunny
+data{1,2}(1)=> sift
+---------------------
+
+FindS
+    'sunny'    'warm'    '?'    'strong'    '?'    '?'
